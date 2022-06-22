@@ -5,6 +5,7 @@ import com.tallerredis.books.util.IRedisBook;
 import com.tallerredis.books.util.RedisBookHelper;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -14,17 +15,19 @@ public class BooksController {
 
     @GetMapping
     public List<Book> findAll(){
-        return null;
+        IRedisBook redisHelper= new RedisBookHelper();
+        return redisHelper.findAll();
     }
 
     @PostMapping
     public void save(@RequestBody Book book){
+        System.out.println("call save");
         IRedisBook redisHelper= new RedisBookHelper();
         redisHelper.save(book);
     }
 
     @GetMapping("{id}")
     public Book findById(@PathVariable Integer id){
-       return null;
+       return new Book();
     }
 }

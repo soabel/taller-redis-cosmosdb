@@ -15,7 +15,7 @@ public class RedisBookHelper implements IRedisBook {
     private String  channel=resource + "Channel";
     private boolean useSsl = true;
     private String cacheHostname= "redissession4.redis.cache.windows.net";
-    private String cachekey = "so49HnTEuD0pBA9UzxETTIZXhcgEVQIzMAzCaFwQdow=";
+    private String cachekey = "Rn884914KFOkgv0h7wNIGOhbzbEphVRilAzCaAGgHvM=";
     private Integer port=6380;
 
     private Jedis redisClient;
