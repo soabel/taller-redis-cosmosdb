@@ -17,15 +17,15 @@ public class BooksApplication {
 
 		SpringApplication.run(BooksApplication.class, args);
 
-//		IRedisBook client = new RedisBookHelper();
-//		client.subscribe(new JedisPubSub() {
-//			@Override
-//			public void onMessage(String channel, String message) {
-//				System.out.println("time = " + java.time.LocalTime.now());
-//				System.out.println("channel = " + channel);
-//				System.out.println("message = " + message);
-//			}
-//		}, "bookChannel");
+		IRedisBook client = new RedisBookHelper();
+		client.subscribe(new JedisPubSub() {
+			@Override
+			public void onMessage(String channel, String message) {
+				System.out.println("time = " + java.time.LocalTime.now());
+				System.out.println("channel = " + channel);
+				System.out.println("message = " + message);
+			}
+		}, "bookChannel");
 	}
 
 

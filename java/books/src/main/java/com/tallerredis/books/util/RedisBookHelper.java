@@ -28,6 +28,15 @@ public class RedisBookHelper implements IRedisBook {
                 .build());
     }
 
+    public void expire(Integer id){
+        String key=this.resource + ":" + id;
+        redisClient.expire(key,1);
+        redisClient.publish("bookExpire","expire " + key);
+    }
+    private void expire(String key, Integer seconds){
+        redisClient.expire(key,seconds);
+    }
+
     @Override
     public boolean save(Book book){
         try{
@@ -37,7 +46,7 @@ public class RedisBookHelper implements IRedisBook {
             redisClient.hset(key, "year",book.getYear().toString());
             redisClient.hset(key, "author",book.getAuthor());
 
-//            redisClient.publish(this.channel,"save " + key );
+            redisClient.publish(this.channel,"save " + book.toString() );
 
             return true;
         }
@@ -51,7 +60,7 @@ public class RedisBookHelper implements IRedisBook {
     public Book findById(Integer id){
         try{
             String key=this.resource + ":" + id.toString();
-//            redisClient.publish(this.channel,"findById " + key );
+            redisClient.publish(this.channel,"findById = " + key );
             return this.getBook(key);
         }
         catch(Exception e){

@@ -21,13 +21,19 @@ public class BooksController {
 
     @PostMapping
     public void save(@RequestBody Book book){
-        System.out.println("call save");
         IRedisBook redisHelper= new RedisBookHelper();
         redisHelper.save(book);
     }
 
+    @PatchMapping("expire/{id}")
+    public void expire(@PathVariable Integer id){
+        IRedisBook redisHelper= new RedisBookHelper();
+        redisHelper.expire(id);
+    }
+
     @GetMapping("{id}")
     public Book findById(@PathVariable Integer id){
-       return new Book();
+        IRedisBook redisHelper= new RedisBookHelper();
+        return redisHelper.findById(id);
     }
 }

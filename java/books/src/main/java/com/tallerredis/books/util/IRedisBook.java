@@ -12,4 +12,5 @@ public interface IRedisBook {
     Book getBook(String key);
     void close();
     void subscribe(JedisPubSub jedisPubSub, String channel);
+    void expire(Integer id);
 }
