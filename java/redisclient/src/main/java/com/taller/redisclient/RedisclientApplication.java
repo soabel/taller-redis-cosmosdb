@@ -34,6 +34,14 @@ public class RedisclientApplication {
 		System.out.println("pelicula2 = " + pelicula2);
 
 
+//		String key="book:1";
+//		jedis.hset(key, "id","1");
+//		jedis.hset(key, "name","Mobidick");
+
+//		var hash = jedis.hgetAll(key);
+
+
+
 	}
 
 }
