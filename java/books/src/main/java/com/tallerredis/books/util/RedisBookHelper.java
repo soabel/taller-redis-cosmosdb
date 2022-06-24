@@ -2,23 +2,31 @@ package com.tallerredis.books.util;
 
 import com.tallerredis.books.entities.Book;
 import org.springframework.beans.factory.annotation.Value;
-import redis.clients.jedis.DefaultJedisClientConfig;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPubSub;
+import redis.clients.jedis.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RedisBookHelper implements IRedisBook {
 
     private String resource="book";
     private String  channel=resource + "Channel";
     private boolean useSsl = true;
-    private String cacheHostname= "redissession4.redis.cache.windows.net";
-    private String cachekey = "Rn884914KFOkgv0h7wNIGOhbzbEphVRilAzCaAGgHvM=";
+    private String cacheHostname= "redis6premium.redis.cache.windows.net";
+    private String cachekey = "Ylmpl0D6txRmRHoegbKAh9qa74zqyr3g4AzCaBp8Plw=";
     private Integer port=6380;
 
-    private Jedis redisClient;
+//    private Jedis redisClient;
+    private JedisCluster redisClient;
+    public final static int CONNECT_TIMEOUT_MILLS = 5000;
+    public final static int OPERATION_TIMEOUT_MILLS = 1000;
+    public final static int POOL_MAX_TOTAL = 200;
+    public final static int POOL_MAX_IDLE = 100;
+    public final static int POOL_MIN_IDLE = 50;
+    public final static boolean POOL_BLOCK_WHEN_EXHAUSTED = true;
+    public final static int POOL_MAX_WAIT_MILLIS = OPERATION_TIMEOUT_MILLS;
+    public final static int RECONNECT_MAX_ATTEMPTS = 3;
 
     public RedisBookHelper(){
         System.out.println("cacheHostname = " + cacheHostname);
@@ -26,6 +34,26 @@ public class RedisBookHelper implements IRedisBook {
                 .password(cachekey)
                 .ssl(useSsl)
                 .build());
+
+//        HostAndPort hostAndPort = new HostAndPort(cacheHostname, this.port);
+//        var poolConfig = createPoolConfig();
+////        public JedisCluster(HostAndPort node, int connectionTimeout, int soTimeout, int maxAttempts, String password, GenericObjectPoolConfig<Connection> poolConfig) {
+//
+//
+//        this.redisClient = new JedisCluster(hostAndPort,CONNECT_TIMEOUT_MILLS,OPERATION_TIMEOUT_MILLS,RECONNECT_MAX_ATTEMPTS,cachekey, poolConfig);
+
+    }
+
+    private static JedisPoolConfig createPoolConfig(){
+        JedisPoolConfig poolConfig = new JedisPoolConfig();
+
+        poolConfig.setMaxTotal(POOL_MAX_TOTAL);
+        poolConfig.setMaxIdle(POOL_MAX_IDLE);
+        poolConfig.setBlockWhenExhausted(POOL_BLOCK_WHEN_EXHAUSTED);
+        poolConfig.setMaxWaitMillis(POOL_MAX_WAIT_MILLIS);
+        poolConfig.setMinIdle(POOL_MIN_IDLE);
+
+        return poolConfig;
     }
 
     public void expire(Integer id){
@@ -51,9 +79,8 @@ public class RedisBookHelper implements IRedisBook {
             return true;
         }
         catch(Exception e){
-
+            throw e;
         }
-        return false;
     }
 
     @Override
@@ -84,11 +111,15 @@ public class RedisBookHelper implements IRedisBook {
         try{
             List<Book> books = new ArrayList();
             var bookKeys = redisClient.keys(this.resource+":*");
-           bookKeys.forEach(key ->{
-              books.add(this.getBook(key));
-           });
 
-//            redisClient.publish(this.channel,"findAll Keys ");
+//            Map<String, JedisPool> clusterNodes = this.redisClient.getClusterNodes();
+//            var bookKeys = clusterNodes.keySet().stream().filter(x-> x.contains(this.resource)).toList();
+//
+//            bookKeys.forEach(key ->{
+//                books.add(this.getBook(key));
+//            });
+
+            redisClient.publish(this.channel,"findAll Keys ");
 
            return books;
         }
@@ -100,7 +131,7 @@ public class RedisBookHelper implements IRedisBook {
 
     @Override
     public void close(){
-        this.redisClient.close();
+//        this.redisClient.close();
     }
 
     public void subscribe(JedisPubSub jedisPubSub, String channel){
